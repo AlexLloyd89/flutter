@@ -12,24 +12,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Personal Expenses',
       theme: ThemeData(
-        brightness: Brightness.dark,
-        fontFamily: 'Quicksand',
-        textTheme: ThemeData.dark().textTheme.copyWith(
-            title: TextStyle(
-                fontFamily: 'Opensans',
-                fontWeight: FontWeight.bold,
-                fontSize: 18)),
-        appBarTheme: AppBarTheme(
-            textTheme: ThemeData.dark().textTheme.copyWith(
-                title: TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black))),
-        primaryColor: Colors.cyanAccent[100],
-        accentColor: Colors.cyan[700],
-        cursorColor: Colors.cyanAccent[100],
-      ),
+          brightness: Brightness.dark,
+          fontFamily: 'Quicksand',
+          textTheme: ThemeData.dark().textTheme.copyWith(
+              title: TextStyle(
+                  fontFamily: 'Opensans',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18)),
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.dark().textTheme.copyWith(
+                  title: TextStyle(
+                      fontFamily: 'OpenSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black))),
+          primaryColor: Colors.cyanAccent[100],
+          accentColor: Colors.cyan[700],
+          cursorColor: Colors.cyanAccent[100],
+          errorColor: Colors.red[300]),
       home: MyHomePage(),
     );
   }
@@ -58,15 +58,23 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String title, double amount) {
+  void _addNewTransaction(String title, double amount, DateTime chosenDate) {
     final newTx = Transaction(
         title: title,
         amount: amount,
-        date: DateTime.now(),
+        date: chosenDate,
         id: DateTime.now().toString());
 
     setState(() {
       _userTransactions.add(newTx);
+    });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((transaction) {
+        return transaction.id == id;
+      });
     });
   }
 
@@ -103,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         children: <Widget>[
           Chart(_recentTransactions),
-          TransactionList(_userTransactions)
+          TransactionList(_userTransactions, _deleteTransaction)
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
